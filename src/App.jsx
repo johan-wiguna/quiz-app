@@ -8,22 +8,43 @@ export default function App() {
     const [questionData, setQuestionData] = useState([])
 
     useEffect(() => {
-        fetch("https://opentdb.com/api.php?amount=5")
+        fetch("https://opentdb.com/api.php?amount=5&type=multiple&category=15")
             .then(response => response.json())
             .then(data => setQuestionData(data.results))
     }, [])
 
+    console.log(questionData)
+
     const questionElements = questionData.map(q => (
-            <Question
-                category={q.category}
-                question={q.question}
-            />
+        <Question
+            key={generateId(20)}
+            category={q.category}
+            question={q.question}
+            correctAnswer={q.correct_answer}
+            incorrectAnswers={q.incorrect_answers}
+        />
     ))
 
     function startGame() {
         setIsPlaying(prevIsPlaying => !prevIsPlaying)
-        console.log("game begin")
+        // fetch("https://opentdb.com/api.php?amount=5&type=multiple&category=15")
+        //     .then(response => response.json())
+        //     .then(data => setQuestionData(data.results))
     }
+
+    function generateId(length) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+          counter += 1;
+        }
+
+        return result;
+    }
+    
 
     return (
         <div className="App">
