@@ -1,42 +1,58 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.btn-primary {
+    background-color: blueviolet;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.initial-container {
+    text-align: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.question-container {
+    padding: 24px 8px;
+    border-bottom: 1px solid rgb(165, 165, 165);
 }
 
-.card {
-  padding: 2em;
+.question {
+    font-weight: bold;
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+    color: rgb(5, 19, 102);
 }
 
-.read-the-docs {
-  color: #888;
+.choices {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.answer {
+    padding: 4px 10px;
+    margin: 12px 12px 0px 0px;
+    border: 1px solid rgb(58, 58, 58);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.answer:hover {
+    background-color: rgb(248, 240, 229);
+}
+
+.answer-selected {
+    background-color: blueviolet;
+    color: white;
+    border: 1px solid rgb(110, 36, 180);
+}
+
+.answer-selected:hover {
+    background-color: rgb(110, 36, 180);
 }
