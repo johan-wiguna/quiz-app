@@ -5,14 +5,27 @@
 }
 
 .btn-primary {
-    background-color: blueviolet;
-    padding: 8px 18px;
+    background-image: linear-gradient(to right, #fc6076, #ff9a44, #ef9d43, #e75516);
+    background-size: 300% 100%;
+    padding: 8px 24px;
     border: none;
     border-radius: 20px;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all .4s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-position: 100% 0;
+    box-shadow: 0 4px 15px 0 rgba(252, 104, 110, 0.75);
 }
 
 .initial-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
 }
 

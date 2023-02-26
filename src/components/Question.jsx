@@ -2,25 +2,44 @@ import { useState, useEffect } from 'react'
 import Answer from "./Answer"
 
 export default function Question(props) {
-    const [answers, setAnswers] = useState([])
+    const [answers, setAnswers] = useState(initializeAnswers)
 
-    useEffect(() => {
+    function initializeAnswers() {
+        const allAnswers = []
         let answerArr = props.incorrectAnswers
         if (!answerArr.includes(props.correctAnswer)) {
             answerArr.push(props.correctAnswer)
         }
         shuffle(answerArr)
 
-        setAnswers(answerArr.map(answer => {
-            return {data: answer, isSelected: false}
-        }))
-    }, [])
+        for (let i = 0; i < answerArr.length; i++) {
+            allAnswers.push({
+                data: answerArr[i],
+                isSelected: false
+            })
+        }
 
-    console.log("answers", answers)
+        return allAnswers
+    }
+
+    // useEffect(() => {
+    //     let answerArr = props.incorrectAnswers
+    //     if (!answerArr.includes(props.correctAnswer)) {
+    //         answerArr.push(props.correctAnswer)
+    //     }
+    //     shuffle(answerArr)
+
+    //     setAnswers(answerArr.map(answer => {
+    //         return {data: answer, isSelected: false}
+    //     }))
+    // }, [])
+
+    // console.log("answers", answers)
 
     const answerElement = answers.map(answer => {
         return (
             <Answer
+                key={Math.random()}
                 data={decode(answer.data)}
                 isSelected={answer.isSelected}
                 selectAnswer={selectAnswer}
@@ -28,10 +47,15 @@ export default function Question(props) {
         )
     })
 
-    function selectAnswer() {
-        setAnswers(prevAnswers => {
-            return {...prevAnswers, isSelected: !prevAnswers.isSelected}
-        })
+    function selectAnswer(e) {
+        let selectedValue = e.target.getAttribute("value")
+        console.log("sel", selectedValue)
+        setAnswers(prevAnswers => prevAnswers.map(prevAnswer => {
+            return {
+                ...prevAnswer,
+                isSelected: (selectedValue == decode(prevAnswer.data) ? !prevAnswer.isSelected : false)
+            }
+        }))
     }
 
     function shuffle(array) {
