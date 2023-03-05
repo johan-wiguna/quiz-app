@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import InitialScreen from './components/InitialScreen.jsx'
 import Question from './components/Question.jsx'
+import Modal from './components/Modal.jsx'
 
 export default function App() {
     const totalQuestions = 5
@@ -9,6 +10,7 @@ export default function App() {
     const [isReady, setIsReady] = useState(false)
     const [questionElements, setQuestionElements] = useState([])
     const [answerStatus, setAnswerStatus] = useState(initializeAnswerStatus(totalQuestions))
+    const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
         fetch(`https://opentdb.com/api.php?amount=${totalQuestions}&type=multiple&category=15`)
@@ -16,6 +18,7 @@ export default function App() {
             .then(data => {
                 const dataResults = data.results
                 console.log(dataResults)
+
                 let idx = 0
                 setQuestionElements(dataResults.map(q => {
                     const id = generateId(16)
@@ -44,7 +47,7 @@ export default function App() {
         let answerStatusArr = []
 
         for (let i = 0; i < totalQuestions; i++) {
-            answerStatusArr.push(false)
+            answerStatusArr.push(null)
         }
 
         return answerStatusArr
@@ -66,7 +69,35 @@ export default function App() {
         })
     }
 
-    console.log(answerStatus)
+    function checkFinalAnswers() {
+        // Check if all of the questions are answered
+        let allQuestionAnswered = true;
+        for (let i = 0; i < answerStatus.length; i++) {
+            const currAnswer = answerStatus[i]
+            if (currAnswer == null) {
+                console.log("ANSWER ALL QUESTIONS!")
+                setShowModal(true)
+                allQuestionAnswered = false;
+                break;
+            }
+        }
+
+        // Summarize correct answers if every question has been answered
+        if (allQuestionAnswered) {
+            let correctAnswers = 0
+            for (let i = 0; i < answerStatus.length; i++) {
+                const answerIsCorrect = answerStatus[i]
+                if (answerIsCorrect) {
+                    correctAnswers++
+                }
+            }
+            console.log(correctAnswers)
+        }
+    }
+
+    function closeModal() {
+        setShowModal(false)
+    }
 
     function generateId(length) {
         let result = ''
@@ -89,8 +120,11 @@ export default function App() {
                 />
                 :
                 <div>
+                    {showModal && <Modal closeModal={closeModal} />}
                     {questionElements}
-                    {isReady && <button className="btn-primary">Check Answers</button>}
+                    <div className="question-end-container">
+                        {isReady && <button className="btn-primary" onClick={() => checkFinalAnswers()}>Check Answers</button>}
+                    </div>
                 </div>
             }
         </div>
