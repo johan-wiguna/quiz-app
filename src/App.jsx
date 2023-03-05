@@ -4,47 +4,82 @@ import InitialScreen from './components/InitialScreen.jsx'
 import Question from './components/Question.jsx'
 
 export default function App() {
+    const totalQuestions = 5
     const [isPlaying, setIsPlaying] = useState(false)
-    const [questionData, setQuestionData] = useState([])
+    const [isReady, setIsReady] = useState(false)
+    const [questionElements, setQuestionElements] = useState([])
+    const [answerStatus, setAnswerStatus] = useState(initializeAnswerStatus(totalQuestions))
 
     useEffect(() => {
-        fetch("https://opentdb.com/api.php?amount=5&type=multiple&category=15")
+        fetch(`https://opentdb.com/api.php?amount=${totalQuestions}&type=multiple&category=15`)
             .then(response => response.json())
-            .then(data => setQuestionData(data.results))
+            .then(data => {
+                const dataResults = data.results
+                console.log(dataResults)
+                let idx = 0
+                setQuestionElements(dataResults.map(q => {
+                    const id = generateId(16)
+                    return (
+                        <Question
+                            key={id}
+                            id={id}
+                            index={idx++}
+                            question={q.question}
+                            correctAnswer={q.correct_answer}
+                            incorrectAnswers={q.incorrect_answers}
+                            changeAnswerStatus={changeAnswerStatus}
+                        />
+                    )
+                }))
+
+                setIsReady(true)
+            })
     }, [])
-
-    console.log(questionData)
-
-    const questionElements = questionData.map(q => (
-        <Question
-            key={generateId(20)}
-            category={q.category}
-            question={q.question}
-            correctAnswer={q.correct_answer}
-            incorrectAnswers={q.incorrect_answers}
-        />
-    ))
 
     function startGame() {
         setIsPlaying(prevIsPlaying => !prevIsPlaying)
-        // fetch("https://opentdb.com/api.php?amount=5&type=multiple&category=15")
-        //     .then(response => response.json())
-        //     .then(data => setQuestionData(data.results))
     }
 
-    function generateId(length) {
-        let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        let counter = 0;
-        while (counter < length) {
-          result += characters.charAt(Math.floor(Math.random() * charactersLength));
-          counter += 1;
+    function initializeAnswerStatus(totalQuestions) {
+        let answerStatusArr = []
+
+        for (let i = 0; i < totalQuestions; i++) {
+            answerStatusArr.push(false)
         }
 
-        return result;
+        return answerStatusArr
     }
-    
+
+    function changeAnswerStatus(questionIndex, answerIsCorrect) {
+        setAnswerStatus(prevAnswerStatus => {
+            let answerStatusArr = []
+
+            for (let i = 0; i < prevAnswerStatus.length; i++) {
+                if (i == questionIndex) {
+                    answerStatusArr.push(answerIsCorrect)
+                } else {
+                    answerStatusArr.push(prevAnswerStatus[i])
+                }
+            }
+
+            return answerStatusArr
+        })
+    }
+
+    console.log(answerStatus)
+
+    function generateId(length) {
+        let result = ''
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        const charactersLength = characters.length
+        let counter = 0
+        while (counter < length) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength))
+          counter += 1
+        }
+
+        return result
+    }
 
     return (
         <div className="App">
@@ -53,7 +88,10 @@ export default function App() {
                     startGame={startGame}
                 />
                 :
-                questionElements
+                <div>
+                    {questionElements}
+                    {isReady && <button className="btn-primary">Check Answers</button>}
+                </div>
             }
         </div>
     )

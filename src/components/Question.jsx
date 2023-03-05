@@ -15,45 +15,40 @@ export default function Question(props) {
         for (let i = 0; i < answerArr.length; i++) {
             allAnswers.push({
                 data: answerArr[i],
-                isSelected: false
+                isSelected: false,
+                isCorrect: (answerArr[i] == props.correctAnswer ? true : false)
             })
         }
 
         return allAnswers
     }
 
-    // useEffect(() => {
-    //     let answerArr = props.incorrectAnswers
-    //     if (!answerArr.includes(props.correctAnswer)) {
-    //         answerArr.push(props.correctAnswer)
-    //     }
-    //     shuffle(answerArr)
-
-    //     setAnswers(answerArr.map(answer => {
-    //         return {data: answer, isSelected: false}
-    //     }))
-    // }, [])
-
-    // console.log("answers", answers)
-
     const answerElement = answers.map(answer => {
         return (
             <Answer
                 key={Math.random()}
+                questionIndex={props.index}
                 data={decode(answer.data)}
                 isSelected={answer.isSelected}
+                isCorrect={answer.isCorrect}
                 selectAnswer={selectAnswer}
             />
         )
     })
 
     function selectAnswer(e) {
+        let selectedQuestionIndex = e.target.getAttribute("data-question-index")
         let selectedValue = e.target.getAttribute("value")
-        console.log("sel", selectedValue)
+        let selectedIsCorrect = (e.target.getAttribute("data-is-correct") === 'true')
+
+        props.changeAnswerStatus(selectedQuestionIndex, selectedIsCorrect)
+
         setAnswers(prevAnswers => prevAnswers.map(prevAnswer => {
+            const isSelected = (selectedValue == decode(prevAnswer.data) ? !prevAnswer.isSelected : false)
+            
             return {
                 ...prevAnswer,
-                isSelected: (selectedValue == decode(prevAnswer.data) ? !prevAnswer.isSelected : false)
+                isSelected: isSelected
             }
         }))
     }
@@ -75,8 +70,8 @@ export default function Question(props) {
     }
 
     function decode(str) {
-        let txt = new DOMParser().parseFromString(str, "text/html");
-        return txt.documentElement.textContent;
+        let txt = new DOMParser().parseFromString(str, "text/html")
+        return txt.documentElement.textContent
     }
 
     return (
