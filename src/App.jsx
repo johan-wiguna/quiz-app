@@ -12,7 +12,7 @@ export default function App() {
     const [isReady, setIsReady] = useState(false)
     const [questionElements, setQuestionElements] = useState([])
     const [answerStatus, setAnswerStatus] = useState(initializeAnswerStatus(totalQuestions))
-    const [showModal, setShowModal] = useState([false, '', {}])
+    const [showModal, setShowModal] = useState({})
     const [hasFinished, setHasFinished] = useState(false)
 
     // useEffect(() => {
@@ -74,7 +74,7 @@ export default function App() {
         setIsPlaying(false)
         setIsReady(false)
         setQuestionElements([])
-        setShowModal(false)
+        setShowModal({})
         setHasFinished(false)
     }
 
@@ -110,7 +110,7 @@ export default function App() {
         for (let i = 0; i < answerStatus.length; i++) {
             const currAnswer = answerStatus[i]
             if (currAnswer == null) {
-                setShowModal([true, 'answer-incomplete', {}])
+                setShowModal({isShown: true, type: 'answer-incomplete'})
                 allQuestionAnswered = false;
                 break;
             }
@@ -118,16 +118,16 @@ export default function App() {
 
         // Summarize correct answers if every question has been answered
         if (allQuestionAnswered) {
-            let correctAnswers = 0
+            let totalCorrectAnswers = 0
             for (let i = 0; i < answerStatus.length; i++) {
                 const answerIsCorrect = answerStatus[i]
                 if (answerIsCorrect) {
-                    correctAnswers++
+                    totalCorrectAnswers++
                 }
             }
 
             setHasFinished(true)
-            setShowModal([true, 'score', {correctAnswers: correctAnswers, totalQuestions: totalQuestions}])
+            setShowModal({isShown: true, type: 'score', data: {totalCorrectAnswers: totalCorrectAnswers, totalQuestions: totalQuestions}})
         }
     }
 
@@ -161,7 +161,7 @@ export default function App() {
     }
 
     function closeModal() {
-        setShowModal([false, '', ''])
+        setShowModal({isShown: false})
     }
 
     function generateId(length) {
@@ -185,20 +185,27 @@ export default function App() {
                 />
                 :
                 <div>
-                    {showModal[0] && <Modal type={showModal[1]} data={showModal[2]} closeModal={closeModal} previewAnswers={previewAnswers} backToMenu={backToMenu} />}
-                    {questionElements}
+                    <CSSTransition in={showModal.isShown} timeout={300} classNames="modal-ctg" unmountOnExit>
+                        <Modal type={showModal.type} data={showModal.data} closeModal={closeModal} previewAnswers={previewAnswers} backToMenu={backToMenu} />
+                    </CSSTransition>
+
+                    <CSSTransition in={isReady} timeout={300} classNames="modal-ctg" unmountOnExit>
+                        <div>{questionElements}</div>
+                    </CSSTransition>
                     <div className="question-end-container">
-                        {isReady ?
+                        <CSSTransition in={isReady} timeout={300} classNames="modal-ctg" unmountOnExit>
                             <div>
                                 <button className="btn-primary btn-red" onClick={() => backToMenu()}>Back to menu</button>
                                 {!hasFinished && <button className="btn-primary btn-blue ml-8" onClick={() => checkFinalAnswers()}>Check answers</button>}
                             </div>
-                            :
+                        </CSSTransition>
+                        
+                        <CSSTransition in={!isReady} timeout={300} classNames="modal-ctg" unmountOnExit>
                             <LoadingScreen
                                 messageHeader="Fetching data..."
                                 messageContent="Please kindly wait &#128578;"
                             />
-                        }
+                        </CSSTransition>
                     </div>
                 </div>
             }

@@ -63,7 +63,7 @@ export default function Question(props) {
             [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
         }
 
-        return array;
+        return array
     }
 
     function decode(str) {

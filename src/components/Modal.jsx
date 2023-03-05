@@ -2,19 +2,22 @@ import React from 'react'
 import imgAnswer from '../assets/modal-answer.png'
 
 export default function Modal(props) {
-    const correctAnswers = props.data.correctAnswers
-    const totalQuestions = props.data.totalQuestions
+    let totalCorrectAnswers = 0
+    let totalQuestions = 0
+    let rating = 0
 
-    let rating = -1
-    if (correctAnswers <= Math.floor(totalQuestions / 2)) {
-        rating = 1
-    } else if (correctAnswers > Math.floor(totalQuestions / 2) && correctAnswers != totalQuestions) {
-        rating = 2
-    } else if (correctAnswers == totalQuestions) {
-        rating = 3
+    if (props.type == "score") {
+        totalCorrectAnswers = props.data.totalCorrectAnswers
+        totalQuestions = props.data.totalQuestions
+
+        if (totalCorrectAnswers <= Math.floor(totalQuestions / 2)) {
+            rating = 1
+        } else if (totalCorrectAnswers > Math.floor(totalQuestions / 2) && totalCorrectAnswers != totalQuestions) {
+            rating = 2
+        } else if (totalCorrectAnswers == totalQuestions) {
+            rating = 3
+        }
     }
-
-    console.log(rating)
 
     return (
         <div className="Modal">
@@ -32,8 +35,8 @@ export default function Modal(props) {
                     <button className="close" onClick={props.closeModal}>✖</button>
                     <img src={imgAnswer} alt="modal-img" />
 
-                    {rating == 1 && <p>You got <b>{correctAnswers}</b> out of <b>{totalQuestions}</b> questions correct. You can do better next time, cheers! &#127867;</p>}
-                    {rating == 2 && <p>You got <b>{correctAnswers}</b> out of <b>{totalQuestions}</b> questions correct.</p>}
+                    {rating == 1 && <p>You got <b>{totalCorrectAnswers}</b> out of <b>{totalQuestions}</b> questions correct. You can do better next time, cheers! &#127867;</p>}
+                    {rating == 2 && <p>You got <b>{totalCorrectAnswers}</b> out of <b>{totalQuestions}</b> questions correct.</p>}
                     {rating == 3 && <p><b>Congratulations!</b><br />You answered all of the questions correctly.</p>}
 
                     <button className="btn-primary btn-modal-wide accept" onClick={props.previewAnswers}>View my mistakes</button>

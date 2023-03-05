@@ -212,7 +212,6 @@
     overflow: auto;
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
-    transition: all 0.3s;
 }
 
 .modal-content {
@@ -258,4 +257,40 @@
 
 .btn-modal-wide {
     width: 100%;
+}
+
+.modal-ctg-enter {
+    opacity: 0;
+}
+
+.modal-ctg-enter-active {
+    opacity: 1;
+    transition: opacity 300ms linear;
+}
+
+.modal-ctg-exit {
+    opacity: 1;
+}
+
+.modal-ctg-exit-active {
+    opacity: 0;
+    transition: opacity 300ms linear;
+}
+
+.loading-screen-ctg-enter {
+    opacity: 0;
+}
+
+.loading-screen-ctg-enter-active {
+    opacity: 1;
+    transition: opacity 300ms linear;
+}
+
+.loading-screen-ctg-exit {
+    opacity: 1;
+}
+
+.loading-screen-ctg-exit-active {
+    opacity: 0;
+    transition: opacity 300ms linear;
 }
