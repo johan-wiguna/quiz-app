@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
+import {Transition, CSSTransition, SwitchTransition, TransitionGroup} from "react-transition-group"
 import './App.css'
 import InitialScreen from './components/InitialScreen.jsx'
 import Question from './components/Question.jsx'
 import Modal from './components/Modal.jsx'
+import LoadingScreen from './components/LoadingScreen.jsx'
 
 export default function App() {
     const totalQuestions = 5
@@ -10,10 +12,39 @@ export default function App() {
     const [isReady, setIsReady] = useState(false)
     const [questionElements, setQuestionElements] = useState([])
     const [answerStatus, setAnswerStatus] = useState(initializeAnswerStatus(totalQuestions))
-    const [showModal, setShowModal] = useState(false)
+    const [showModal, setShowModal] = useState([false, '', {}])
+    const [hasFinished, setHasFinished] = useState(false)
 
-    useEffect(() => {
-        fetch(`https://opentdb.com/api.php?amount=${totalQuestions}&type=multiple&category=15`)
+    // useEffect(() => {
+    //     fetch(`https://opentdb.com/api.php?amount=${totalQuestions}&type=multiple&category=15`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             const dataResults = data.results
+    //             console.log(dataResults)
+
+    //             let idx = 0
+    //             setQuestionElements(dataResults.map(q => {
+    //                 const id = generateId(16)
+    //                 return (
+    //                     <Question
+    //                         key={id}
+    //                         id={id}
+    //                         index={idx++}
+    //                         question={q.question}
+    //                         correctAnswer={q.correct_answer}
+    //                         incorrectAnswers={q.incorrect_answers}
+    //                         changeAnswerStatus={changeAnswerStatus}
+    //                     />
+    //                 )
+    //             }))
+
+    //             setIsReady(true)
+    //         })
+    // }, [])
+
+    function startGame() {
+        setIsPlaying(prevIsPlaying => !prevIsPlaying)
+        fetch(`https://opentdb.com/api.php?amount=${totalQuestions}&type=multiple`)
             .then(response => response.json())
             .then(data => {
                 const dataResults = data.results
@@ -37,10 +68,14 @@ export default function App() {
 
                 setIsReady(true)
             })
-    }, [])
+    }
 
-    function startGame() {
-        setIsPlaying(prevIsPlaying => !prevIsPlaying)
+    function backToMenu() {
+        setIsPlaying(false)
+        setIsReady(false)
+        setQuestionElements([])
+        setShowModal(false)
+        setHasFinished(false)
     }
 
     function initializeAnswerStatus(totalQuestions) {
@@ -75,8 +110,7 @@ export default function App() {
         for (let i = 0; i < answerStatus.length; i++) {
             const currAnswer = answerStatus[i]
             if (currAnswer == null) {
-                console.log("ANSWER ALL QUESTIONS!")
-                setShowModal(true)
+                setShowModal([true, 'answer-incomplete', {}])
                 allQuestionAnswered = false;
                 break;
             }
@@ -91,12 +125,43 @@ export default function App() {
                     correctAnswers++
                 }
             }
-            console.log(correctAnswers)
+
+            setHasFinished(true)
+            setShowModal([true, 'score', {correctAnswers: correctAnswers, totalQuestions: totalQuestions}])
         }
     }
 
-    function closeModal() {
+    function previewAnswers() {
+        let answerElements = document.getElementsByClassName("answer")
+        for (let i = 0; i < answerElements.length; i++) {
+            let currAnswer = answerElements[i]
+            currAnswer.disabled = true
+        }
+
+        let correctAnswerElements = document.getElementsByClassName("answer-correct")
+        for (let i = 0; i < correctAnswerElements.length; i++) {
+            const currAnswer = correctAnswerElements[i]
+            if (currAnswer.classList.contains("answer-selected")) {
+                currAnswer.classList.remove("answer-selected")
+            }
+            currAnswer.classList.add("answer-correct-highlight")
+        }
+
+        let incorrectAnswerElements = document.getElementsByClassName("answer-incorrect")
+        for (let i = 0; i < incorrectAnswerElements.length; i++) {
+            const currAnswer = incorrectAnswerElements[i]
+            if (currAnswer.classList.contains("answer-selected")) {
+                currAnswer.classList.remove("answer-selected")
+                currAnswer.classList.add("answer-incorrect-highlight")
+                
+            }
+        }
+
         setShowModal(false)
+    }
+
+    function closeModal() {
+        setShowModal([false, '', ''])
     }
 
     function generateId(length) {
@@ -120,10 +185,20 @@ export default function App() {
                 />
                 :
                 <div>
-                    {showModal && <Modal closeModal={closeModal} />}
+                    {showModal[0] && <Modal type={showModal[1]} data={showModal[2]} closeModal={closeModal} previewAnswers={previewAnswers} backToMenu={backToMenu} />}
                     {questionElements}
                     <div className="question-end-container">
-                        {isReady && <button className="btn-primary" onClick={() => checkFinalAnswers()}>Check Answers</button>}
+                        {isReady ?
+                            <div>
+                                <button className="btn-primary btn-red" onClick={() => backToMenu()}>Back to menu</button>
+                                {!hasFinished && <button className="btn-primary btn-blue ml-8" onClick={() => checkFinalAnswers()}>Check answers</button>}
+                            </div>
+                            :
+                            <LoadingScreen
+                                messageHeader="Fetching data..."
+                                messageContent="Please kindly wait &#128578;"
+                            />
+                        }
                     </div>
                 </div>
             }

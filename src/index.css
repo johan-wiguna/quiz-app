@@ -16,7 +16,7 @@
 }
 
 * {
-    font-family: Karla;
+    font-family: 'Karla', serif;
 }
 
 a {
@@ -43,7 +43,7 @@ h1 {
 @media (prefers-color-scheme: dark) {
     :root {
         color: #213547;
-        background-color: #F5F7FB;
+        background-color: #ffffff;
     }
     a:hover {
         color: #747bff;
