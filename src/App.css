@@ -237,7 +237,7 @@
 
 .modal-content p {
     margin-bottom: 40px;
-    font-size: 18px;
+    font-size: 1.1rem;
 }
 
 .modal-content button.close {
@@ -293,4 +293,15 @@
 .loading-screen-ctg-exit-active {
     opacity: 0;
     transition: opacity 300ms linear;
+}
+
+@media only screen and (max-device-width: 480px) {
+    .question {
+        font-size: 1.2rem;
+    }
+
+    .answer {
+        font-size: 0.8rem;
+        text-align: center;
+    }
 }

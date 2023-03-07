@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import {Transition, CSSTransition, SwitchTransition, TransitionGroup} from "react-transition-group"
-import './App.css'
 import InitialScreen from './components/InitialScreen.jsx'
 import Question from './components/Question.jsx'
 import Modal from './components/Modal.jsx'
@@ -11,7 +10,7 @@ export default function App() {
     const [isPlaying, setIsPlaying] = useState(false)
     const [isReady, setIsReady] = useState(false)
     const [questionElements, setQuestionElements] = useState([])
-    const [answerStatus, setAnswerStatus] = useState(initializeAnswerStatus(totalQuestions))
+    const [answerStatus, setAnswerStatus] = useState(initializeAnswerStatus())
     const [showModal, setShowModal] = useState({})
     const [hasFinished, setHasFinished] = useState(false)
 
@@ -74,11 +73,12 @@ export default function App() {
         setIsPlaying(false)
         setIsReady(false)
         setQuestionElements([])
+        setAnswerStatus(initializeAnswerStatus())
         setShowModal({})
         setHasFinished(false)
     }
 
-    function initializeAnswerStatus(totalQuestions) {
+    function initializeAnswerStatus() {
         let answerStatusArr = []
 
         for (let i = 0; i < totalQuestions; i++) {
@@ -109,6 +109,7 @@ export default function App() {
         let allQuestionAnswered = true;
         for (let i = 0; i < answerStatus.length; i++) {
             const currAnswer = answerStatus[i]
+            console.log("ans-", i, currAnswer)
             if (currAnswer == null) {
                 setShowModal({isShown: true, type: 'answer-incomplete'})
                 allQuestionAnswered = false;
@@ -185,28 +186,34 @@ export default function App() {
                 />
                 :
                 <div>
-                    <CSSTransition in={showModal.isShown} timeout={300} classNames="modal-ctg" unmountOnExit>
+                    <CSSTransition in={isReady} timeout={300} classNames="ctg" unmountOnExit>
+                        <div>
+                            <div className="logo">treevee</div>
+                            <div className="instruction">Answer all of the questions below!</div>
+                        </div>
+                    </CSSTransition>
+
+                    <CSSTransition in={showModal.isShown} timeout={300} classNames="ctg" unmountOnExit>
                         <Modal type={showModal.type} data={showModal.data} closeModal={closeModal} previewAnswers={previewAnswers} backToMenu={backToMenu} />
                     </CSSTransition>
 
-                    <CSSTransition in={isReady} timeout={300} classNames="modal-ctg" unmountOnExit>
+                    <CSSTransition in={isReady} timeout={300} classNames="ctg" unmountOnExit>
                         <div>{questionElements}</div>
                     </CSSTransition>
-                    <div className="question-end-container">
-                        <CSSTransition in={isReady} timeout={300} classNames="modal-ctg" unmountOnExit>
-                            <div>
-                                <button className="btn-primary btn-red" onClick={() => backToMenu()}>Back to menu</button>
-                                {!hasFinished && <button className="btn-primary btn-blue ml-8" onClick={() => checkFinalAnswers()}>Check answers</button>}
-                            </div>
-                        </CSSTransition>
-                        
-                        <CSSTransition in={!isReady} timeout={300} classNames="modal-ctg" unmountOnExit>
-                            <LoadingScreen
-                                messageHeader="Fetching data..."
-                                messageContent="Please kindly wait &#128578;"
-                            />
-                        </CSSTransition>
-                    </div>
+
+                    <CSSTransition in={!isReady} timeout={300} classNames="ctg" unmountOnExit>
+                        <LoadingScreen
+                            messageHeader="Fetching data..."
+                            messageContent="Please kindly wait &#128578;"
+                        />
+                    </CSSTransition>
+                    
+                    <CSSTransition in={isReady} timeout={300} classNames="question-end-container ctg" unmountOnExit>
+                        <div>
+                            <button id="btn-menu" className="btn-primary btn-red" onClick={() => backToMenu()}>Back to menu</button>
+                            {!hasFinished && <button id="btn-check-answers" className="btn-primary btn-blue" onClick={() => checkFinalAnswers()}>Check answers</button>}
+                        </div>
+                    </CSSTransition>
                 </div>
             }
         </div>

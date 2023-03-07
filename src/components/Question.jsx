@@ -72,8 +72,8 @@ export default function Question(props) {
     }
 
     return (
-        <div className={`question-container question-color-${(props.index) % 5}`}>
-            <div className="question">{decode(props.question)}</div>
+        <div className={`Question question-color-${(props.index) % 5}`}>
+            <div className="question-text">{decode(props.question)}</div>
             <div className="choices">
                 {answerElement}
             </div>

@@ -39,7 +39,7 @@ export default function Modal(props) {
                     {rating == 2 && <p>You got <b>{totalCorrectAnswers}</b> out of <b>{totalQuestions}</b> questions correct.</p>}
                     {rating == 3 && <p><b>Congratulations!</b><br />You answered all of the questions correctly.</p>}
 
-                    <button className="btn-primary btn-modal-wide accept" onClick={props.previewAnswers}>View my mistakes</button>
+                    <button className="btn-primary btn-modal-wide accept" onClick={props.previewAnswers}>View my mistake(s)</button>
                     <button className="btn-primary btn-modal-wide accept mt-8" onClick={props.backToMenu}>Back to menu</button>
                 </div>
             }
