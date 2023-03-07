@@ -4,11 +4,13 @@ import imgAnswer from '../assets/modal-answer.png'
 export default function Modal(props) {
     let totalCorrectAnswers = 0
     let totalQuestions = 0
+    let totalIncorrectAnswers = 0
     let rating = 0
 
     if (props.type == "score") {
         totalCorrectAnswers = props.data.totalCorrectAnswers
         totalQuestions = props.data.totalQuestions
+        totalIncorrectAnswers = totalQuestions - totalCorrectAnswers
 
         if (totalCorrectAnswers <= Math.floor(totalQuestions / 2)) {
             rating = 1
@@ -39,7 +41,7 @@ export default function Modal(props) {
                     {rating == 2 && <p>You got <b>{totalCorrectAnswers}</b> out of <b>{totalQuestions}</b> questions correct.</p>}
                     {rating == 3 && <p><b>Congratulations!</b><br />You answered all of the questions correctly.</p>}
 
-                    <button className="btn-primary btn-modal-wide accept" onClick={props.previewAnswers}>View my mistake(s)</button>
+                    <button className="btn-primary btn-modal-wide accept" onClick={props.previewAnswers}>{totalIncorrectAnswers > 1 ? "View my mistakes" : "View my mistake"}</button>
                     <button className="btn-primary btn-modal-wide accept mt-8" onClick={props.backToMenu}>Back to menu</button>
                 </div>
             }
