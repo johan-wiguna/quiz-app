@@ -109,7 +109,6 @@ export default function App() {
         let allQuestionAnswered = true;
         for (let i = 0; i < answerStatus.length; i++) {
             const currAnswer = answerStatus[i]
-            console.log("ans-", i, currAnswer)
             if (currAnswer == null) {
                 setShowModal({isShown: true, type: 'answer-incomplete'})
                 allQuestionAnswered = false;

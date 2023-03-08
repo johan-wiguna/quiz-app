@@ -324,9 +324,13 @@ h1 {
     padding: 24px 20px 36px;
 }
 
-.modal-content img {
+.modal-content .img-answer-incomplete {
     width: 40%;
     margin-bottom: 15px;
+}
+
+.modal-content .img-emoji {
+    width: 30%;
 }
 
 .modal-content p {
@@ -421,8 +425,12 @@ h1 {
         padding: 30px 30px 50px;
     }
 
-    .modal-content img {
+    .modal-content .img-answer-incomplete {
         width: 50%;
+    }
+
+    .modal-content .img-emoji {
+        width: 40%;
     }
     
     .modal-content p {
