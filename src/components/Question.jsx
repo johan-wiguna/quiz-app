@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import Answer from "./Answer"
 
 export default function Question(props) {
-    const [answers, setAnswers] = useState(initializeAnswers)
+    const [answers, setAnswers] = useState(initializeAnswers())
 
     function initializeAnswers() {
-        const allAnswers = []
+        let allAnswers = []
         let answerArr = props.incorrectAnswers
         if (!answerArr.includes(props.correctAnswer)) {
             answerArr.push(props.correctAnswer)
@@ -54,13 +54,11 @@ export default function Question(props) {
     }
 
     function shuffle(array) {
-        let currentIndex = array.length,  randomIndex
-      
-        while (currentIndex != 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex)
-            currentIndex--
-        
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
         }
 
         return array
