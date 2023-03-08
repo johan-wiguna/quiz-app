@@ -37,7 +37,7 @@ export default function Modal(props) {
 
             {(props.type == "score") &&
                 <div className="modal-content" id="modal-content">
-                    <button className="close" onClick={props.closeModal}>✖</button>
+                    <button className="close" onClick={props.previewAnswers}>✖</button>
                     
                     {rating == 1 && <img className="img-emoji" src={imgSad} alt="modal-img" />}
                     {rating == 2 && <img className="img-emoji" src={imgSmile} alt="modal-img" />}

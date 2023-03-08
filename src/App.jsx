@@ -47,7 +47,6 @@ export default function App() {
             .then(response => response.json())
             .then(data => {
                 const dataResults = data.results
-                console.log(dataResults)
 
                 let idx = 0
                 setQuestionElements(dataResults.map(q => {
